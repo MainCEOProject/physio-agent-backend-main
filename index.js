@@ -11,16 +11,24 @@ const PORT = Number(process.env.PORT) || 3000;
  * Simple Agent Logic (Platzhalter)
  * -> hier bauen wir später echte KI-Logik rein
  */
-function handleAgent(message) {
+async function handleAgent(message) {
   if (!message) {
     return "Keine Nachricht erhalten.";
   }
 
-  if (message.toLowerCase().includes("termin")) {
-    return "🗓️ Ich prüfe verfügbare Termine für dich.";
-  }
+  const response = await fetch(FLOWISE_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      question: message
+    })
+  });
 
-  return `🤖 Agent hat empfangen: "${message}"`;
+  const data = await response.json();
+
+  return data.text || "Keine Antwort vom Agenten.";
 }
 
 /**
